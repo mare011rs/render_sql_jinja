@@ -24,3 +24,11 @@ chmod +x /full/path/to/rendersql.py
 rendersql path/to/your/jinja/dataset.sql
 ```
 This will create a new file with the same name as your original sql file, just concatenating "_render" to the end of filename.
+
+### Considerations
+1. If you are using the "filter_values" Superset macro, always define its placeholder in in a variable at the beginning of your dataset.
+```sql
+{% set test_variable = filter_values('FILTER_2') if filter_values('FILTER_2') else [1, 2, 3] %}
+```
+In this way, if the dataset is used within Superset dashboard it will use the filter values for rendering, and if it is used outside of the dashboard context it will use the placeholder for rendering. See ```test.sql``` file to understand how this is done.
+2. ```dataset()``` macro can't be used with this script. All macros that this cript can use must be defined within the dataset sql file and must be executable on Superset.
